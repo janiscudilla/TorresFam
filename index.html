@@ -62,7 +62,7 @@ main{min-width:0;max-width:none;overflow-wrap:anywhere}
 
 /* Build 8 — member intake */
 .intake-actions{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-bottom:18px}.intake-actions .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px}.intake-help{font-size:12px;color:var(--muted);margin:-8px 0 20px}.intake-dialog{max-width:min(720px,calc(100vw - 24px))}.intake-dialog h2{color:var(--deep)}.intake-tip{background:#faf5ee;border:1px solid #e7d9cc;border-radius:9px;padding:12px 14px;margin:10px 0 16px;font-size:12px;color:#695b51}.intake-dialog textarea{width:100%;resize:vertical;min-height:170px;line-height:1.75}.intake-preview{max-height:190px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;margin-top:12px}.intake-preview div{padding:7px 12px;border-bottom:1px solid #eee7df;font-size:12px}.intake-preview div:last-child{border-bottom:0}.intake-foot{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}.intake-action-secondary{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;color:var(--deep)}.intake-inline{display:flex;gap:10px;flex-wrap:wrap}.intake-inline label{flex:1;min-width:190px;display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:600}.intake-inline input{width:100%}@media(max-width:700px){.intake-actions{display:grid;grid-template-columns:1fr 1fr}.intake-actions .btn{white-space:normal}.intake-dialog{padding:18px}.intake-foot .btn{flex:1}}
-</style></head><body><div class="shell"><aside class="sidebar"><div class="brand"><div class="monogram">T</div><div><strong>Torres Family</strong><small>Our family, our story</small></div></div><div class="navlabel">Family hub</div><button type="button" class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false" onclick="toggleMobileNav(this)">☰ Menu</button><div class="nav" id="nav"></div><div class="asidebottom">PRIVATE FAMILY WORKSPACE<br><b>Build 8 · Responsive households</b><br><span>Private family workspace · Google sign-in.</span></div></aside><main><div class="topbar"><div class="breadcrumb">TORRES FAMILY <span style="color:#c7c8bd">/</span> <span id="crumb">Overview</span></div><div class="actions"><span class="sync-chip" id="syncChip" aria-live="polite">Connecting…</span><button class="accountbtn" id="accountButton" onclick="accountAction()" title="Sign in with Google" aria-label="Sign in with Google">⇥</button><button class="btn" onclick="printReport()">↗ Print / PDF</button><button class="btn" onclick="exportJSON()">↓ Backup</button><button class="btn primary" onclick="quickAdd()">+ Add new</button></div></div><div id="app"></div></main></div><dialog id="modal"><div id="modalbody"></div></dialog><div id="toast" hidden class="notification"></div><script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+</style></head><body><div class="shell"><aside class="sidebar"><div class="brand"><div class="monogram">T</div><div><strong>Torres Family</strong><small>Our family, our story</small></div></div><div class="navlabel">Family hub</div><button type="button" class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false" onclick="toggleMobileNav(this)">☰ Menu</button><div class="nav" id="nav"></div><div class="asidebottom">PRIVATE FAMILY WORKSPACE<br><b>Build 8.1 · Responsive households</b><br><span>Private family workspace · Google sign-in.</span></div></aside><main><div class="topbar"><div class="breadcrumb">TORRES FAMILY <span style="color:#c7c8bd">/</span> <span id="crumb">Overview</span></div><div class="actions"><span class="sync-chip" id="syncChip" aria-live="polite">Connecting…</span><button class="accountbtn" id="accountButton" onclick="accountAction()" title="Sign in with Google" aria-label="Sign in with Google">⇥</button><button class="btn" onclick="printReport()">↗ Print / PDF</button><button class="btn" onclick="exportJSON()">↓ Backup</button><button class="btn primary" onclick="quickAdd()">+ Add new</button></div></div><div id="app"></div></main></div><dialog id="modal"><div id="modalbody"></div></dialog><div id="toast" hidden class="notification"></div><script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script defer>
@@ -122,25 +122,84 @@ function saveQuickNames(){let {newRows,dups,errors}=quickNamePreview();if(errors
 function spreadsheetImportForm(){openModal(`<div class="intake-dialog"><p class="eyebrow">Family directory · Spreadsheet</p><h2>Import from Google Sheets</h2><p>Bring your existing directory into TorresFam without retyping everyone.</p><div class="intake-tip"><b>In Google Sheets:</b> Open your family list → File → Download → Comma Separated Values (.csv). Then choose the CSV file below.<br><br><b>You don't need every column.</b> Start with a <b>Name</b> column, or <b>First Names</b> and <b>Birth Surname</b>. Birthday and relationships can be blank.</div><div class="intake-actions"><button class="btn" onclick="templateCSV()">↓ Download sample CSV template</button><button class="btn" onclick="exportJSON()">↓ Back up existing data</button></div><label style="display:block;font-weight:600;margin:10px 0 7px;color:var(--deep)">Choose exported CSV</label><input class="field" style="width:100%" type="file" id="intakeCsv" accept=".csv,text/csv"><div class="intake-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="importSelectedCSV()">Preview & import CSV</button></div><p class="tips">Import adds new members only and skips matching names. Parent and spouse links are attempted when uniquely matched. Existing records are not overwritten.</p></div>`)}
 async function importSelectedCSV(){const file=el('intakeCsv')?.files?.[0];if(!file){alert('Choose your CSV file first.');return}closeModal();await importCSV(file)}
 
-function csvDate(raw){if(!raw)return '';let s=raw.trim();if(/^\d{4}-\d{2}-\d{2}$/.test(s)){let d=new Date(s+'T12:00:00');return !isNaN(d)&&d.toISOString().slice(0,10)===s?s:''}let m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);if(m){let d=new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));if(d.getDate()===Number(m[1])&&d.getMonth()===Number(m[2])-1)return [m[3],m[2].padStart(2,'0'),m[1].padStart(2,'0')].join('-')}return ''}
-async function importCSV(file){if(!file)return;try{
- const rows=parseCSV((await file.text()).replace(/^\ufeff/,''));if(rows.length<2)throw Error('CSV has no records');const head=rows.shift().map(x=>x.trim().toLowerCase());const idx=n=>head.indexOf(n.toLowerCase());const col=(r,...names)=>{for(const n of names){let j=idx(n);if(j>=0)return (r[j]||'').trim()}return ''};if(idx('Name')<0&&idx('First Names')<0&&idx('First Name')<0)throw Error('Missing Name, First Names or First Name header');
- const key=s=>String(s||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,' ' ).trim();
- const known=new Set(db.people.map(p=>key(displayName(p))));let candidates=[],duplicate=[],invalid=[];
- for(const [index,r] of rows.entries()){
-  const firstNames=col(r,'First Names','First Name'),birthMiddleName=col(r,'Birth Middle Name','Middle Name at Birth'),birthSurname=col(r,'Birth Surname','Surname','Last Name'),currentMiddleName=col(r,'Current Middle Name'),currentSurname=col(r,'Current Surname'),suffix=col(r,'Suffix');
-  const name=col(r,'Name','Full Name')||[firstNames,currentMiddleName||birthMiddleName,currentSurname||birthSurname,suffix].filter(Boolean).join(' ');if(!name.trim())continue;
-  if(known.has(key(name))){duplicate.push(name);continue}known.add(key(name));
-  const rawDob=col(r,'Birthday','Date of Birth');let dob=csvDate(rawDob);if(rawDob&&!dob){invalid.push('Row '+(index+2)+': '+rawDob);continue}
-  candidates.push({id:id(),name,firstNames,birthMiddleName,birthSurname,currentMiddleName,currentSurname,suffix,nickname:col(r,'Nickname'),dob,location:col(r,'Location'),generation:Number(col(r,'Generation'))||'',_household:col(r,'Household'),_parent1:col(r,'Parent 1','Father'),_parent2:col(r,'Parent 2','Mother'),_spouse:col(r,'Spouse','Spouse / Partner'),pwd:/^(yes|true|1)$/i.test(col(r,'PWD')),deceased:/^(yes|true|1)$/i.test(col(r,'Deceased'))});
+function csvDateInfo(raw){
+ const value=String(raw||'').trim();if(!value)return {iso:'',partial:'',warning:''};
+ const mk=(y,m,d)=>{const dt=new Date(Date.UTC(y,m-1,d));return dt.getUTCFullYear()===y&&dt.getUTCMonth()===m-1&&dt.getUTCDate()===d?`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`:''};
+ let m=value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+ if(m){const iso=mk(+m[1],+m[2],+m[3]);return {iso,partial:'',warning:iso?'':'Invalid calendar date: '+value}}
+ m=value.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+ if(m){const iso=mk(+m[3],+m[2],+m[1]);return {iso,partial:'',warning:iso?'':'Invalid calendar date: '+value}}
+ const months={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+ m=value.match(/^([a-zA-Z]+)\.?\s+(\d{1,2}),?\s+(\d{2}|\d{4})$/);
+ if(m&&months[m[1].toLowerCase().slice(0,3)]){
+  let y=Number(m[3]);if(m[3].length===2)y+=y<=26?2000:1900;
+  const iso=mk(y,months[m[1].toLowerCase().slice(0,3)],Number(m[2]));
+  return {iso,partial:'',warning:iso?'':'Invalid calendar date: '+value};
  }
- let preview=`Ready to import ${candidates.length} new people.\nAlready existing / repeated names skipped: ${duplicate.length}.\nInvalid dates skipped: ${invalid.length}.\n\nThis adds records to your existing database. It does not overwrite anyone. Continue?`;
+ m=value.match(/^(\d{4})$/);
+ if(m)return {iso:'',partial:value,warning:'Only birth year supplied: '+value+' (birthday left blank)'};
+ return {iso:'',partial:value,warning:'Unrecognized date: '+value+' (birthday left blank)'};
+}
+function csvDate(raw){return csvDateInfo(raw).iso}
+async function importCSV(file){if(!file)return;try{
+ const rows=parseCSV((await file.text()).replace(/^\ufeff/,''));if(rows.length<2)throw Error('CSV has no records');
+ const head=rows.shift().map(x=>x.trim().toLowerCase());
+ const idx=n=>head.indexOf(n.toLowerCase());
+ const col=(r,...names)=>{for(const n of names){const j=idx(n);if(j>=0)return String(r[j]||'').trim()}return ''};
+ if(idx('Name')<0&&idx('First Names')<0&&idx('First Name')<0)throw Error('Missing Name, First Names or First Name header');
+ const key=v=>String(v||'').trim().toLocaleLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+ const identity=p=>key([p.firstNames,p.birthMiddleName,p.birthSurname,p.suffix].filter(Boolean).join(' '))||key(p.name);
+ const identities=new Set(db.people.map(identity));
+ const exactNames=new Set(db.people.map(p=>key(p.name)));
+ let candidates=[],duplicates=[],warnings=[],blankRows=0;
+ for(const [index,r] of rows.entries()){
+  const rowNum=index+2;
+  const firstNames=col(r,'First Names','First Name')||col(r,'Name','Full Name');
+  const birthMiddleName=col(r,'Birth Middle Name','Middle Name at Birth');
+  const birthSurname=col(r,'Birth Surname','Surname','Last Name');
+  const currentMiddleName=col(r,'Current Middle Name');
+  const currentSurname=col(r,'Current Surname');
+  const suffix=col(r,'Suffix');
+  const sourceName=col(r,'Name','Full Name');
+  if(!firstNames){blankRows++;warnings.push(`Row ${rowNum}: missing name`);continue}
+  const fullBirthName=[firstNames,birthMiddleName,birthSurname,suffix].filter(Boolean).join(' ');
+  const exactId=key(fullBirthName)||key(sourceName)||key(firstNames);
+  // Use the structured name to avoid conflating cousins with the same given names.
+  if(identities.has(exactId)||(!birthSurname&&exactNames.has(key(sourceName||firstNames)))){duplicates.push(`Row ${rowNum}: ${fullBirthName}`);continue}
+  identities.add(exactId);
+  const date=csvDateInfo(col(r,'Birthday','Date of Birth'));
+  if(date.warning)warnings.push(`Row ${rowNum} (${firstNames}): ${date.warning}`);
+  const deathRaw=col(r,'Deceased');
+  const deathYear=/^(18|19|20)\d{2}$/.test(deathRaw)?deathRaw:'';
+  if(deathYear)warnings.push(`Row ${rowNum} (${firstNames}): deceased year ${deathYear} recorded, exact death date unknown`);
+  const p={id:id(),name:sourceName||fullBirthName,firstNames,birthMiddleName,birthSurname,currentMiddleName,currentSurname,suffix,
+    nickname:col(r,'Nickname'),dob:date.iso,location:col(r,'Location'),generation:Number(col(r,'Generation'))||'',
+    _household:col(r,'Household'),_parent1:col(r,'Parent 1','Father'),_parent2:col(r,'Parent 2','Mother'),_spouse:col(r,'Spouse','Spouse / Partner'),
+    pwd:/^(yes|true|1)$/i.test(col(r,'PWD')),deceased:!!deathYear||/^(yes|true|1)$/i.test(deathRaw)};
+  if(date.partial)p.birthDateOriginal=date.partial;
+  if(deathYear)p.deathYear=deathYear;
+  candidates.push(p);
+ }
+ const preview=`CSV rows: ${rows.length}\nNew people to add: ${candidates.length}\nExisting / repeated names skipped: ${duplicates.length}\nRows without a name: ${blankRows}\nDate or data warnings (people retained): ${warnings.length}\n\n${warnings.length?'Examples to review:\n'+warnings.slice(0,8).join('\n')+(warnings.length>8?'\n...and '+(warnings.length-8)+' more':'')+'\n\n':''}No family member will be omitted solely because their birthday is missing or unclear.\n\nImport these ${candidates.length} people?`;
  if(!candidates.length){alert(preview);return}if(!confirm(preview))return;
- const all=db.people.concat(candidates);let ambiguous=[];const resolve=(v)=>{if(!v)return '';const m=all.filter(p=>key(displayName(p))===key(v)||key(birthName(p))===key(v)||key(p.name)===key(v));if(m.length===1)return m[0].id;ambiguous.push(v+(m.length?' (multiple matches)':' (not found)'));return ''};
- for(const p of candidates){if(p._household){let h=db.households.find(x=>key(x.name)===key(p._household));if(!h){h={id:id(),name:p._household,gift:'Undecided'};db.households.push(h)}p.household=h.id}p.parent1=resolve(p._parent1);p.parent2=resolve(p._parent2);p.spouse=resolve(p._spouse);delete p._household;delete p._parent1;delete p._parent2;delete p._spouse}
- db.people.push(...candidates);save();alert(`Imported ${candidates.length} people. Skipped ${duplicate.length} repeated names and ${invalid.length} invalid dates. ${ambiguous.length} family links require manual review.\n\nDownload a backup after checking your data.`);
- if(ambiguous.length)console.warn('Unresolved Torres family links:',ambiguous);
- }catch(e){alert('Could not import CSV: '+e.message)}}
+ const all=db.people.concat(candidates),unresolved=[];
+ const resolve=(v,person,kind)=>{
+  if(!v)return '';
+  const matches=all.filter(p=>[p.name,p.firstNames,p.nickname,displayName(p),birthName(p)].some(x=>key(x)===key(v)));
+  const unique=[...new Set(matches.map(p=>p.id))];
+  if(unique.length===1&&unique[0]!==person.id)return unique[0];
+  unresolved.push(`${displayName(person)}: ${kind} "${v}" (${unique.length?'ambiguous':'not found'})`);return '';
+ };
+ for(const person of candidates){
+  if(person._household){let h=db.households.find(x=>key(x.name)===key(person._household));if(!h){h={id:id(),name:person._household,gift:'Undecided'};db.households.push(h)}person.household=h.id}
+  person.parent1=resolve(person._parent1,person,'Parent 1');person.parent2=resolve(person._parent2,person,'Parent 2');person.spouse=resolve(person._spouse,person,'Spouse');
+  delete person._household;delete person._parent1;delete person._parent2;delete person._spouse;
+ }
+ db.people.push(...candidates);save();
+ alert(`Added ${candidates.length} family members.\nSkipped ${duplicates.length} repeated names and ${blankRows} nameless rows.\nDate/data warnings: ${warnings.length} (no members discarded for date problems).\nUnresolved parent/spouse links: ${unresolved.length}.\n\nDownload a JSON backup and review your records.`);
+ if(warnings.length||unresolved.length)console.warn('TorresFam import review:',{warnings,unresolved,duplicates});
+ }catch(e){alert('Could not import CSV: '+e.message)}
+}
 function clearData(){if(prompt('To clear every record in this browser, type DELETE:')!=='DELETE')return;db=initial();save();notice('Browser records cleared')}
 /* Build 6: Firebase Google popup sign-in, private admin storage. */
 // These Firebase Web App values are public identifiers, never service-account credentials.
