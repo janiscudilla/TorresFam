@@ -191,7 +191,7 @@ dialog.member-editor-dialog{width:min(1080px,calc(100vw - 32px));max-width:1080p
 .event-info{margin:16px 0}.event-info .cardheader{margin-bottom:13px}.event-fields{display:grid;grid-template-columns:1fr 1.4fr 1.4fr;gap:12px}.event-fields label{display:grid;gap:6px;font-size:12px;color:var(--muted)}.event-fields input{width:100%;padding:11px 12px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--ink);min-width:0}.event-stats{margin:12px 0}.event-roster{margin:18px 0}.event-roster .cardheader{align-items:flex-start}.event-roster .cardheader .muted{font-size:12px;line-height:1.6;margin-top:5px}.event-roster-tools{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 14px}.event-roster-tools input,.event-roster-tools select{border:1px solid var(--line);background:#fff;padding:10px 12px;border-radius:8px;min-width:180px;max-width:100%}.event-scroll{overflow:auto;max-height:650px;border:1px solid var(--line);border-radius:10px}.event-table{width:100%;min-width:790px;border-collapse:collapse}.event-table th{position:sticky;top:0;background:#fbf8f4;z-index:2;white-space:nowrap}.event-table td,.event-table th{padding:12px 10px;vertical-align:middle}.event-table tr:nth-child(even) td{background:#fdfbf8}.event-table small.event-fullname{display:block;font-size:10px;margin-top:4px;color:var(--muted);line-height:1.4}.event-check{display:flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;font-size:12px;color:var(--ink)}.event-check input[type=checkbox]{appearance:auto!important;-webkit-appearance:checkbox!important;width:16px!important;height:16px!important;min-width:16px;min-height:16px;margin:0;accent-color:var(--deep);cursor:pointer}.event-rsvp{padding:8px 6px;max-width:156px;min-width:128px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:12px}.event-na{color:var(--muted);font-size:11px}.event-roster .tips{font-size:12px;line-height:1.7;margin-top:13px}
 @media(max-width:840px){.event-fields{grid-template-columns:1fr 1fr}.event-fields label:last-child{grid-column:1/-1}}@media(max-width:540px){.event-fields{grid-template-columns:1fr}.event-fields label:last-child{grid-column:auto}.event-roster-tools input,.event-roster-tools select{flex:1;min-width:135px}.event-check-label{display:none}.event-table{min-width:750px}.event-roster{padding:12px}}
 @media print{.event-scroll{max-height:none;overflow:visible}.event-table th{position:static}.event-roster-tools,.event-years{display:none}.event-roster{break-inside:avoid-page}}
-</style></head><body><div class="shell"><aside class="sidebar"><div class="brand"><div class="monogram">T</div><div><strong>Torres Family</strong><small>Our family, our story</small></div></div><div class="navlabel">Family hub</div><button type="button" class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false" onclick="toggleMobileNav(this)">☰ Menu</button><div class="nav" id="nav"></div><div class="asidebottom">PRIVATE FAMILY WORKSPACE<br><b>Build 17 · Country location fix</b><br><span>Private family workspace · Google sign-in.</span></div></aside><main><div class="topbar"><div class="breadcrumb">TORRES FAMILY <span style="color:#c7c8bd">/</span> <span id="crumb">Overview</span></div><div class="actions"><span class="sync-chip" id="syncChip" aria-live="polite">Connecting…</span><button class="accountbtn" id="accountButton" onclick="accountAction()" title="Sign in with Google" aria-label="Sign in with Google">⇥</button><button class="btn" onclick="printReport()">↗ Print / PDF</button><button class="btn" onclick="exportJSON()">↓ Backup</button><button class="btn primary" onclick="quickAdd()">+ Add new</button></div></div><div id="app"></div></main></div><dialog id="modal"><div id="modalbody"></div></dialog><div id="toast" hidden class="notification"></div><script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+</style></head><body><div class="shell"><aside class="sidebar"><div class="brand"><div class="monogram">T</div><div><strong>Torres Family</strong><small>Our family, our story</small></div></div><div class="navlabel">Family hub</div><button type="button" class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false" onclick="toggleMobileNav(this)">☰ Menu</button><div class="nav" id="nav"></div><div class="asidebottom">PRIVATE FAMILY WORKSPACE<br><b>Build 18 · Shared admin access</b><br><span>Private family workspace · Google sign-in.</span></div></aside><main><div class="topbar"><div class="breadcrumb">TORRES FAMILY <span style="color:#c7c8bd">/</span> <span id="crumb">Overview</span></div><div class="actions"><span class="sync-chip" id="syncChip" aria-live="polite">Connecting…</span><button class="accountbtn" id="accountButton" onclick="accountAction()" title="Sign in with Google" aria-label="Sign in with Google">⇥</button><button class="btn" onclick="printReport()">↗ Print / PDF</button><button class="btn" onclick="exportJSON()">↓ Backup</button><button class="btn primary" onclick="quickAdd()">+ Add new</button></div></div><div id="app"></div></main></div><dialog id="modal"><div id="modalbody"></div></dialog><div id="toast" hidden class="notification"></div><script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script defer>
@@ -679,8 +679,8 @@ async function importCSV(file){if(!file)return;try{
  }catch(e){alert('Could not import CSV: '+e.message)}
 }
 function clearData(){if(prompt('To clear every record in this browser, type DELETE:')!=='DELETE')return;db=initial();save();notice('Browser records cleared')}
-/* Build 6: Firebase Google popup sign-in, private admin storage. */
-// These Firebase Web App values are public identifiers, never service-account credentials.
+/* Build 18: shared administrator workspace, with guarded first-time migration. */
+// Firebase Web App configuration is public. Firestore Rules enforce access.
 const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyCixB_QE9oWoc7-VurqsLamJQVjbiTsmlU',
   authDomain: 'torresfam.firebaseapp.com',
@@ -689,24 +689,95 @@ const FIREBASE_CONFIG = {
   messagingSenderId: '452602060673',
   appId: '1:452602060673:web:c22edae4e4e0c9d14b9280'
 };
-let fbApp=null,fbAuth=null,fbStore=null,fbUser=null,cloudReady=false,cloudState='Connecting…',cloudWriteQueue=Promise.resolve(),cloudRevision=0,authPending=true,cloudError='';
-const cloudDoc=()=>fbStore.collection('users').doc(fbUser.uid).collection('private').doc('familyHub');
+const SUPERADMIN_EMAIL='janiscudilla@gmail.com';
+const ADMIN_UIDS=new Set(['WRbrhEbXAZPKsI3vGhmWaadBosb2']);
+const SHARED_WORKSPACE='torresFamilyHub';
+let fbApp=null,fbAuth=null,fbStore=null,fbUser=null,cloudReady=false,
+    cloudState='Connecting…',cloudWriteQueue=Promise.resolve(),cloudRevision=0,
+    cloudVersion=0,authPending=true,cloudError='',cloudDocUpdated=null;
+const isSuperadmin=user=>!!user&&user.email?.toLowerCase()===SUPERADMIN_EMAIL&&user.emailVerified&&user.providerData?.some(p=>p.providerId==='google.com');
+const adminRole=user=>isSuperadmin(user)?'Superadmin':(user&&ADMIN_UIDS.has(user.uid)?'Admin':null);
+const cloudDoc=()=>fbStore.collection('workspaces').doc(SHARED_WORKSPACE);
+const legacyCloudDoc=()=>fbStore.collection('users').doc(fbUser.uid).collection('private').doc('familyHub');
 const hasLocalRecords=()=>['people','households','dues','rsvps','budgets','ledger','awards','games','householdGifts'].some(k=>db[k]?.length);
 function setCloudState(v){cloudState=v;refreshCloudIndicator()}
-function refreshCloudIndicator(){let e=el('syncChip');if(e){e.textContent=cloudState;e.title=cloudState;e.classList.toggle('warning',/failed|error|offline|denied|unsaved/i.test(cloudState))}let a=el('accountButton');if(a){a.textContent=fbUser?'●':'⇥';a.title=fbUser?'Account · '+(fbUser.email||'Google'):'Sign in with Google';a.setAttribute('aria-label',a.title)}}
-function renderLocked(){document.body.classList.remove('signed-in');el('nav').innerHTML=navItems.map(([k,i,t])=>`<button disabled><span class="ico">${i}</span>${t}</button>`).join('');el('crumb').textContent='Private workspace';el('app').className='locked';el('app').innerHTML=`<section class="locked-card"><div class="monogram" style="margin:auto">T</div><h2>${authPending?'Opening your family hub…':fbUser?'Checking your family records':'Our family, our story.'}</h2><p>${esc(cloudError|| (authPending?'Checking your saved Google session.':fbUser?'Your records remain private until a secure connection is established.':'Sign in with your approved Google account to access the Torres family archive.'))}</p>${!authPending&&!fbUser?'<button class="btn primary" onclick="googleSignIn()">Sign in with Google ↗</button>':''}${fbUser&&!cloudReady?'<button class="btn" onclick="retryCloud()">Retry loading records</button>':''}</section>`;refreshCloudIndicator()}
-function accountAction(){if(!fbUser)return googleSignIn();let old=el('accountMenu');if(old){old.remove();return}let m=document.createElement('div');m.className='accountmenu';m.id='accountMenu';m.innerHTML=`<strong>Torres Family Hub</strong><div><small>${esc(fbUser.email||'Google account')}</small></div><div style="margin-top:6px"><small>${esc(cloudState)}</small></div><button class="btn" onclick="this.closest('.accountmenu').remove();go('data')">Data & backups</button><button class="btn danger" onclick="this.closest('.accountmenu').remove();cloudSignOut()">Sign out</button>`;document.querySelector('.actions').append(m)}
+function refreshCloudIndicator(){let e=el('syncChip');if(e){e.textContent=cloudState;e.title=cloudState;e.classList.toggle('warning',/failed|error|offline|denied|unsaved|conflict/i.test(cloudState))}
+ let a=el('accountButton');if(a){let role=adminRole(fbUser);a.textContent=fbUser?'●':'⇥';a.title=fbUser?`${role||'Unapproved account'} · ${fbUser.email||'Google'}`:'Sign in with Google';a.setAttribute('aria-label',a.title)}}
+function renderLocked(){document.body.classList.remove('signed-in');el('nav').innerHTML=navItems.map(([k,i,t])=>`<button disabled><span class="ico">${i}</span>${t}</button>`).join('');el('crumb').textContent='Private workspace';el('app').className='locked';el('app').innerHTML=`<section class="locked-card"><div class="monogram" style="margin:auto">T</div><h2>${authPending?'Opening your family hub…':fbUser?'Checking your family records':'Our family, our story.'}</h2><p>${esc(cloudError||(authPending?'Checking your saved Google session.':fbUser?'Your records remain private until a secure connection is established.':'Sign in with your approved Google account to access the Torres family archive.'))}</p>${!authPending&&!fbUser?'<button class="btn primary" onclick="googleSignIn()">Sign in with Google ↗</button>':''}${fbUser&&!cloudReady?'<button class="btn" onclick="retryCloud()">Retry loading records</button>':''}</section>`;refreshCloudIndicator()}
+function accountAction(){if(!fbUser)return googleSignIn();let old=el('accountMenu');if(old){old.remove();return}let m=document.createElement('div');m.className='accountmenu';m.id='accountMenu';m.innerHTML=`<strong>Torres Family Hub</strong><div><small>${esc(fbUser.email||'Google account')}</small></div><div><small>Role: ${esc(adminRole(fbUser)||'Not authorized')}</small></div><div style="margin-top:6px"><small>${esc(cloudState)}</small></div><button class="btn" onclick="this.closest('.accountmenu').remove();go('data')">Shared data & backups</button><button class="btn danger" onclick="this.closest('.accountmenu').remove();cloudSignOut()">Sign out</button>`;document.querySelector('.actions').append(m)}
 async function googleSignIn(){if(!fbAuth){alert('Firebase is still loading. Please check your internet connection and refresh.');return}try{const provider=new firebase.auth.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});await fbAuth.signInWithPopup(provider)}catch(e){if(e.code==='auth/popup-blocked')alert('Please allow popups for janiscudilla.github.io, then try again.');else if(e.code!=='auth/popup-closed-by-user')alert('Google sign-in failed: '+e.message)}}
-async function cloudSignOut(){cloudReady=false;fbUser=null;db=initial();try{localStorage.removeItem(KEY)}catch(e){}await fbAuth?.signOut();authPending=false;cloudError='';setCloudState('Sign in');render()}
-function cloudPanel(){return `<section class="card" style="margin-bottom:16px"><div class="cardheader"><h3>Private cloud storage</h3><span class="pill">${esc(cloudState)}</span></div><p class="muted">Signed in as <strong>${esc(fbUser?.email||'')}</strong>. Your edits save automatically to your private Firestore record. Keep independent backups below.</p><div class="toolbar"><button class="btn" onclick="cloudPullConfirm()">Reload from Firebase</button><button class="btn" onclick="cloudPushConfirm()">Upload local records</button></div><p class="tips">One shared snapshot: editing simultaneously on multiple devices can overwrite newer changes. Verify cloud sync before switching devices. The owner-only Firestore rules must be published separately.</p></section>`}
+async function cloudSignOut(){cloudReady=false;fbUser=null;db=initial();cloudVersion=0;try{localStorage.removeItem(KEY)}catch(e){}await fbAuth?.signOut();authPending=false;cloudError='';setCloudState('Sign in');render()}
+function cloudPanel(){return `<section class="card" style="margin-bottom:16px"><div class="cardheader"><h3>Shared TorresFam cloud storage</h3><span class="pill">${esc(cloudState)}</span></div><p class="muted">Signed in as <strong>${esc(fbUser?.email||'')}</strong> (${esc(adminRole(fbUser)||'Unapproved')}). All approved administrators use the <strong>same family records</strong>. Keep independent backups.</p><div class="toolbar"><button class="btn" onclick="cloudPullConfirm()">Reload from Firebase</button><button class="btn" onclick="cloudPushConfirm()">Save local changes (conflict-protected)</button></div><p class="tips">Shared document: if another administrator saves first, your outdated write is blocked. Export your JSON backup before reloading or resolving a conflict. Only the Superadmin may manage access; roles are enforced by published Firestore rules.</p></section>`}
 function mergeCloudDb(d){if(!d||!Array.isArray(d.people)||!Array.isArray(d.households))throw Error('Invalid Firebase document');db={...initial(),...d,settings:{...initial().settings,...d.settings}};localStorage.setItem(KEY,JSON.stringify(db))}
 async function readCloud(){const snap=await cloudDoc().get({source:'server'});return snap.exists?snap.data():null}
-async function syncOnLogin(user){authPending=false;cloudReady=false;cloudError='';setCloudState('Loading…');render();try{let d=await readCloud();if(fbUser?.uid!==user.uid)return;if(d){if(hasLocalRecords()){const replace=confirm('Firebase has saved records. Load the cloud copy?\n\nOK = use Firebase records (recommended). Cancel = keep local data temporarily.');if(!replace){cloudError='Cloud data exists, but local data was kept. Choose Reload or Upload in Data & exports after backing up.';setCloudState('Cloud not loaded');render();return}}mergeCloudDb(d.payload);cloudReady=true;setCloudState('Cloud saved');}else if(hasLocalRecords()) {cloudReady=false;cloudError='No existing Firebase data. Your browser still contains records. Back up first, then choose to upload them.';setCloudState('Migration needed');render();if(confirm('No cloud copy exists yet. Upload the records stored in this browser?\n\nCancel to leave them untouched.')){cloudReady=true;queueCloudSave();cloudError='';}else return;}else{db=initial();cloudReady=true;setCloudState('Connected');}render()}catch(e){cloudReady=false;cloudError='Unable to access your private Firestore records: '+e.message;setCloudState('Access denied / error');render()}}
+async function firstTimeMigration(user){
+ if(!isSuperadmin(user)){
+   cloudError='The shared family database has not been initialized. Ask the Superadmin to sign in and migrate the existing records first.';
+   setCloudState('Awaiting shared setup');render();return false;
+ }
+ // Previous builds stored the owner's authoritative data here. Never erase it.
+ let legacy=null;
+ try{const snap=await legacyCloudDoc().get({source:'server'});if(snap.exists)legacy=snap.data()}catch(e){
+   cloudError='Could not verify the original private records. No migration was performed: '+e.message;
+   setCloudState('Migration blocked');render();return false;
+ }
+ const source=legacy?.payload;
+ if(!source||!Array.isArray(source.people)||!Array.isArray(source.households)){
+   cloudError='The original family database was not found at your account’s previous storage path. No new empty shared database has been created. Download a JSON backup and verify the original records before migration.';
+   setCloudState('Migration blocked');render();return false;
+ }
+ cloudError=`Found ${source.people.length} members and ${source.households.length} households in your original Firebase record. Create a shared copy for you and Honey? The original will remain untouched. Download a JSON backup first if you have not already.`;
+ setCloudState('Migration requires approval');render();
+ if(!confirm(cloudError))return false;
+ try{
+   await fbStore.runTransaction(async transaction=>{
+      const shared=await transaction.get(cloudDoc());
+      if(shared.exists)throw Error('The shared record was initialized by another session; reload instead.');
+      transaction.set(cloudDoc(),{payload:source,schemaVersion:18,version:1,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),migratedFrom:'owner-private-record'});
+   });
+ }catch(e){cloudError='Shared copy could not be created; your original records remain safe. '+e.message;setCloudState('Migration failed');render();return false}
+ return true;
+}
+async function syncOnLogin(user){authPending=false;cloudReady=false;cloudError='';cloudVersion=0;setCloudState('Loading shared family records…');render();
+ if(!adminRole(user)){cloudError='This Google account is not approved to access the Torres Family Hub.';setCloudState('Access denied');render();return}
+ try{
+   let record=await readCloud();if(fbUser?.uid!==user.uid)return;
+   if(!record){if(!await firstTimeMigration(user))return;record=await readCloud();if(!record)throw Error('Shared migration completed but the database is missing. Reload and verify in Firebase Console.')}
+   if(!record.payload)throw Error('The shared family record has no payload. No data was overwritten.');
+   // Always use the authoritative shared copy; do not silently upload stale browser data.
+   if(hasLocalRecords()&&JSON.stringify(db)!==JSON.stringify(record.payload)){
+      if(!confirm('Shared TorresFam records are ready. Load the shared database from Firebase?\n\nOK = load the shared data (recommended). Cancel = preserve unsynced browser data until you export a JSON backup.')){
+         cloudError='Local data kept; the shared database has NOT been replaced. Export a backup, then reload.';
+         setCloudState('Local data needs review');render();return;
+      }
+   }
+   mergeCloudDb(record.payload);cloudVersion=Number(record.version||0);cloudDocUpdated=record.updatedAt||null;
+   cloudReady=true;cloudError='';setCloudState('Cloud saved · shared');render();
+ }catch(e){cloudReady=false;cloudError='Unable to access the shared TorresFam records: '+e.message;setCloudState('Access denied / error');render()}
+}
 async function retryCloud(){if(fbUser)await syncOnLogin(fbUser)}
-async function cloudPullConfirm(){if(!fbUser)return;if(!confirm('Replace browser records with the cloud copy? Download a JSON backup first if you have unsynced changes.'))return;cloudReady=false;render();await retryCloud()}
-async function cloudPushConfirm(){if(!fbUser)return;if(!confirm('Overwrite the Firebase snapshot using records currently in this browser? Download a backup first.'))return;cloudReady=true;queueCloudSave()}
-function queueCloudSave(){if(!cloudReady||!fbUser)return;const uid=fbUser.uid,payload=JSON.parse(JSON.stringify(db)),version=++cloudRevision;setCloudState('Saving…');cloudWriteQueue=cloudWriteQueue.catch(()=>{}).then(async()=>{if(!fbUser||fbUser.uid!==uid||!cloudReady)return;try{await cloudDoc().set({payload,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),schemaVersion:4});if(version===cloudRevision){setCloudState('Cloud saved');notice('✓ Saved to cloud successfully')}}catch(e){cloudError=e.message;setCloudState('Cloud save failed');alert('Cloud save failed. Your browser still has a local copy; export a JSON backup. '+e.message)}})}
-function initCloud(){if(typeof firebase==='undefined'){authPending=false;cloudError='Firebase SDK could not load. Check internet connection and refresh.';setCloudState('Offline');render();return}try{fbApp=firebase.apps.find(a=>a.name==='torresFamily')||firebase.initializeApp(FIREBASE_CONFIG,'torresFamily');fbAuth=fbApp.auth();fbStore=fbApp.firestore();fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(console.warn);fbAuth.onAuthStateChanged(async user=>{fbUser=user;cloudReady=false;authPending=false;cloudError='';if(!user){db=initial();setCloudState('Sign in');render();return}await syncOnLogin(user)},e=>{authPending=false;cloudError=e.message;setCloudState('Authentication failed');render()});}catch(e){authPending=false;cloudError=e.message;setCloudState('Firebase initialization failed');render()}}
+async function cloudPullConfirm(){if(!fbUser)return;if(!confirm('Replace browser records with the SHARED Firebase copy? Export a JSON backup first if you have unsynced changes.'))return;cloudReady=false;render();await retryCloud()}
+async function cloudPushConfirm(){if(!fbUser||!cloudReady)return;if(!confirm('Save your current browser records to the shared Firebase database? A concurrent-edit check will prevent replacing a newer cloud version.'))return;queueCloudSave()}
+function queueCloudSave(){if(!cloudReady||!fbUser)return;const uid=fbUser.uid,payload=JSON.parse(JSON.stringify(db)),version=++cloudRevision;
+ setCloudState('Saving…');cloudWriteQueue=cloudWriteQueue.catch(()=>{}).then(async()=>{
+    if(!fbUser||fbUser.uid!==uid||!cloudReady)return;
+    try{
+      await fbStore.runTransaction(async transaction=>{
+         const ref=cloudDoc();const snap=await transaction.get(ref);
+         if(!snap.exists)throw Error('The shared record is missing. Saving is disabled until the Superadmin restores it.');
+         const remoteVersion=Number(snap.data().version||0);
+         if(remoteVersion!==cloudVersion)throw Error('CONFLICT: Another admin saved newer changes. Export your unsynced JSON backup before reloading.');
+         transaction.update(ref,{payload,version:remoteVersion+1,schemaVersion:18,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      });
+      cloudVersion++;
+      if(version===cloudRevision){setCloudState('Cloud saved · shared');notice('✓ Saved to shared cloud successfully')}
+    }catch(e){cloudError=e.message;setCloudState(/CONFLICT/.test(e.message)?'Cloud conflict — unsaved':'Cloud save failed');alert('Cloud save failed. Your browser keeps the local changes. Export a JSON backup before reloading. '+e.message)}
+ })
+}
+function initCloud(){if(typeof firebase==='undefined'){authPending=false;cloudError='Firebase SDK could not load. Check internet connection and refresh.';setCloudState('Offline');render();return}
+ try{fbApp=firebase.apps.find(a=>a.name==='torresFamily')||firebase.initializeApp(FIREBASE_CONFIG,'torresFamily');fbAuth=fbApp.auth();fbStore=fbApp.firestore();fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(console.warn);
+ fbAuth.onAuthStateChanged(async user=>{fbUser=user;cloudReady=false;authPending=false;cloudError='';if(!user){db=initial();setCloudState('Sign in');render();return}await syncOnLogin(user)},e=>{authPending=false;cloudError=e.message;setCloudState('Authentication failed');render()});
+ }catch(e){authPending=false;cloudError=e.message;setCloudState('Firebase initialization failed');render()}}
 window.addEventListener('load',initCloud);
 
 render();
